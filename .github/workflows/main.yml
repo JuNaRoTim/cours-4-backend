@@ -20,12 +20,12 @@ jobs:
           php-version: 8.2
 
       - name: Install dependencies
-        run: docker compose php composer install
+        run: docker compose exec php composer install
 
       - name: Run PHPStan and PHPCS
         run: |
-          docker compose php vendor/bin/phpstan analyze
-          docker compose php vendor/bin/phpcs
+          docker compose exec php vendor/bin/phpstan analyze
+          docker compose exec php vendor/bin/phpcs
 
       - name: Run PHPUnit
-        run: docker compose php bin/phpunit
+        run: docker compose exec php bin/phpunit
