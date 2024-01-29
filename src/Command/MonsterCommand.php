@@ -2,47 +2,47 @@
 
 namespace App\Command;
 
-use Symfony\Component\Console\Attribute\AsCommand;
+use App\Entity\Monster;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Id\AssignedGenerator;
+use Faker\Factory;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: 'app:monster',
-    description: 'Add a short description for your command',
-)]
 class MonsterCommand extends Command
 {
-    public function __construct()
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
     {
         parent::__construct();
+
+        $this->entityManager = $entityManager;
     }
 
-    protected function configure(): void
+    protected function configure()
     {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+        $this->setName('app:add-monster-data')
+            ->setDescription('Add Monster entities with Faker data.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $faker = Factory::create();
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        for ($i = 0; $i < 10; $i++) {
+            $monster = new Monster();
+            $monster->setName($faker->name);
+            $monster->setPv($faker->numberBetween(50, 200));
+            $monster->setLevel($faker->numberBetween(1, 25));
+
+            $this->entityManager->persist($monster);
         }
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
+        $this->entityManager->flush();
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $output->writeln('Monster data added successfully.');
 
         return Command::SUCCESS;
     }
