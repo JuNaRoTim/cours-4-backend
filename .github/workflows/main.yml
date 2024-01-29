@@ -7,6 +7,12 @@ on:
       - JuRo
       - TiNa
 
+  pull_request:
+      branches:
+        - main
+        - JuRo
+        - TiNa
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -20,14 +26,11 @@ jobs:
         with:
           php-version: 8.2
 
-      - name: Run and Install dependencies
-        run: docker compose run --rm php composer install
-
       - name: Run PHPStan
-        run: docker compose exec php vendor/bin/phpstan analyze
+        run: php vendor/bin/phpstan analyze
 
       - name: Run PHPCS
-        run: docker compose exec php vendor/bin/phpcs
+        run: php vendor/bin/phpcs
 
       - name: Run PHPUnit
-        run: docker compose exec php bin/phpunit
+        run: php bin/phpunit
