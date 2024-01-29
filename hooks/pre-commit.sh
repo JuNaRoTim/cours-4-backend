@@ -11,4 +11,3 @@ docker compose exec php vendor/bin/phpcs
 
 # Exécuter les tests unitaires avec PHPUnit
 docker compose exec php bin/phpunit --testsuite unit
-
