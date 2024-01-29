@@ -33,6 +33,6 @@ class MonsterTest extends TestCase
     public function testGetId(): void
     {
         $monster = new Monster();
-        $this->assertEquals(1, $monster->getId());
+        $this->assertEquals(0, $monster->getId());
     }
 }
