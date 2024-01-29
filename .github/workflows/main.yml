@@ -1,0 +1,31 @@
+name: PHP CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install dependencies
+        run: docker compose php composer install
+
+      - name: Run PHPStan and PHPCS
+        run: |
+          docker compose php vendor/bin/phpstan analyze
+          docker compose php vendor/bin/phpcs
+
+      - name: Run PHPUnit
+        run: docker compose php bin/phpunit
